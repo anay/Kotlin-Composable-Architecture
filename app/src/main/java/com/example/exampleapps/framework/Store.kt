@@ -75,7 +75,7 @@ fun <State, Action, AppEnvironment> combine(
     vararg reducers: Reducer<State, Action, AppEnvironment>
 ): Reducer<State, Action, AppEnvironment> = { state, action, environment ->
     reducers.fold(Pair(state, emptyFlow())){ result, reducer ->
-        var (nextState, nextEffects) = reducer(result.first, action, environment)
+        val (nextState, nextEffects) = reducer(result.first, action, environment)
         Pair(
             nextState,
             flowOf(result.second, nextEffects).flattenMerge()
