@@ -5,8 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import arrow.core.none
 import arrow.core.toOption
+import arrow.optics.*
 import arrow.optics.Optional
-import arrow.optics.optics
 import com.example.exampleapps.framework.Reducer
 import com.example.exampleapps.framework.Store
 import com.example.exampleapps.framework.pullBack
@@ -34,24 +34,26 @@ fun App(store: Store<AppState, AppActions>) {
     }
 }
 
-val appReducer: Reducer<AppState, AppActions> = com.example.exampleapps.framework.combine(
+val appReducer: Reducer<AppState, AppActions, Unit> = com.example.exampleapps.framework.combine(
     pullBack(
         reducer = counterReducer,
         stateMapper = AppState.counterState,
-        actionMapper = AppActions.Counter
+        actionMapper = AppActions.Counter,
+        environmentMapper = { }
     ),
     pullBack(
         reducer = selectedDataReducer,
         stateMapper = AppState.selectedDataState,
-        actionMapper = AppActions.SelectedData
+        actionMapper = AppActions.SelectedData,
+        environmentMapper = { }
     )
 )
 
 @optics
 data class AppState(val count:Int, val navigateTo:String="counter"){
     companion object{
-        val counterState = Optional<AppState, CounterState>(
-            getOption = { it.counterState.toOption() },
+        val counterState:Lens<AppState, CounterState> = Lens(
+            get = { it.counterState },
             set = { appState, counterState ->
                 appState.copy(
                     count = counterState.counter,
@@ -60,8 +62,8 @@ data class AppState(val count:Int, val navigateTo:String="counter"){
             }
         )
 
-        val selectedDataState = Optional<AppState, SelectedDataState>(
-            getOption = { it.selectedDataState.toOption() },
+        val selectedDataState:Lens<AppState, SelectedDataState> = Lens(
+            get = { it.selectedDataState },
             set = { appState, selectedData ->
                 appState.copy(
                     count = selectedData.count,

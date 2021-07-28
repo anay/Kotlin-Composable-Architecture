@@ -9,9 +9,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val store = Store(
-            initialState = AppState(10, "counter"),
-            reducer = appReducer
+        val store = Store.of(
+            state = AppState(0, "counter"),
+            reducer = appReducer,
+            environment = Unit
         )
         setContent {
             App(store)

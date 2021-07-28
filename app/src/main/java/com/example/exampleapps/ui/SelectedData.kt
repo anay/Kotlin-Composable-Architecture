@@ -30,7 +30,7 @@ sealed class SelectedDataActions{
     object Reset: SelectedDataActions()
 }
 
-val selectedDataReducer: Reducer<SelectedDataState, SelectedDataActions> = { state, actions ->
+val selectedDataReducer: Reducer<SelectedDataState, SelectedDataActions, Unit> = { state, actions,_ ->
     when(actions){
 
         SelectedDataActions.OkClicked -> Pair(

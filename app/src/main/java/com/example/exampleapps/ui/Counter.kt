@@ -34,7 +34,7 @@ sealed class CounterActions{
 }
 
 
-val counterReducer: Reducer<CounterState, CounterActions> = { state, action ->
+val counterReducer: Reducer<CounterState, CounterActions, Unit> = { state, action, _->
     when(action){
         CounterActions.NextScreen -> Pair(
             state.copy(navigateTo = "selectedData"),
