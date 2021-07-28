@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import arrow.optics.optics
 import com.example.exampleapps.framework.Reducer
 import com.example.exampleapps.framework.Store
+import com.example.exampleapps.framework.StoreView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
@@ -60,39 +61,32 @@ val counterReducer: Reducer<CounterState, CounterActions, Unit> = { state, actio
 
 @Composable
 fun Counter(store: Store<CounterState, CounterActions>) {
-    val state by store.state.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-    MaterialTheme {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
+
+    return StoreView(store) { state ->
+        MaterialTheme {
+            Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center
             ) {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        store.send(CounterActions.Decrement)
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Button(onClick = sendToStore(CounterActions.Decrement)) {
+                        Text("-")
                     }
-                }) {
-                    Text("-")
-                }
-                Text("${state.counter}", textAlign = TextAlign.Center)
-                Button(onClick = {
-                    coroutineScope.launch {
-                        store.send(CounterActions.Increment)
+                    Text("${state.counter}", textAlign = TextAlign.Center)
+                    Button(onClick = sendToStore(CounterActions.Increment)) {
+                        Text("+")
                     }
-                }) {
-                    Text("+")
                 }
-            }
-            Button(onClick = { coroutineScope.launch { store.send(CounterActions.NextScreen) } }) {
-                Text("Next")
+                Button(onClick = sendToStore(CounterActions.NextScreen)) {
+                    Text("Next")
+                }
             }
         }
     }

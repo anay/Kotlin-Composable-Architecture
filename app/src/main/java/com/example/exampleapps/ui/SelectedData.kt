@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import arrow.optics.optics
 import com.example.exampleapps.framework.Reducer
 import com.example.exampleapps.framework.Store
+import com.example.exampleapps.framework.StoreView
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
@@ -47,33 +48,25 @@ val selectedDataReducer: Reducer<SelectedDataState, SelectedDataActions, Unit> =
 
 @Composable
 fun SelectedData(store: Store<SelectedDataState, SelectedDataActions>){
-    val state by store.state.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-
-    MaterialTheme {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxHeight()
-        ) {
-            Text(
-                "Count:"
-            )
-            Text(state.count.toString())
-            Button(onClick = {
-                coroutineScope.launch {
-                    store.send(SelectedDataActions.OkClicked)
+    StoreView(store) { state ->
+        MaterialTheme {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxHeight()
+            ) {
+                Text(
+                    "Count:"
+                )
+                Text(state.count.toString())
+                Button(onClick = sendToStore(SelectedDataActions.OkClicked)) {
+                    Text("Ok")
                 }
-            }) {
-                Text("Ok")
-            }
-            Button(onClick = {
-                coroutineScope.launch {
-                    store.send(SelectedDataActions.Reset)
+                Button(onClick = sendToStore(SelectedDataActions.Reset)) {
+                    Text("Reset")
                 }
-            }) {
-                Text("Reset")
             }
         }
     }
+
 }
